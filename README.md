@@ -220,7 +220,7 @@ try {
 } catch (ApiError $error) {
     logger()->error('Oriacall failed', [
         'status' => $error->status,
-        'code' => $error->code,
+        'code' => $error->errorCode,
         'message' => $error->getMessage(),
         'request_id' => $error->requestId,
         'details' => $error->details,
