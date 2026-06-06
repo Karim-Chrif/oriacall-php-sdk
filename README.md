@@ -127,6 +127,7 @@ $oriacall->webhooks->endpoints->paginate(['limit' => 50]);
 $response = $oriacall->calls->upload([
     'idempotencyKey' => 'crm-call-123',
     'externalId' => 'crm-call-123',
+    // Optional hint. Oriacall may override it during audio analysis.
     'objectiveId' => 'objective-id',
     'queueAnalysis' => true,
     'agent' => [
@@ -164,6 +165,10 @@ To upload in-memory audio, use `contents` instead of `path`:
 ```
 
 Required scope: `calls:write`.
+
+`objectiveId` is optional. When provided, it is treated as a hint for the first audio analysis pass. If Oriacall cannot identify an objective confidently, the organization's superadmin-configured fallback objective is used.
+
+Call responses include objective selection metadata: `objectiveHint`, `identifiedObjective`, `objectiveSelectionSource`, `objectiveIdentificationConfidence`, and `analysisStage`. Call detail analysis includes user-visible organization detections in `organizationDetectedTags` and `organizationDetectedParams`. Hidden global detections are never exposed by the API or SDK.
 
 ## Pagination
 
