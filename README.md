@@ -168,7 +168,7 @@ Required scope: `calls:write`.
 
 `objectiveId` is optional. When provided, it is treated as a hint for the first audio analysis pass. If Oriacall cannot identify an objective confidently, the organization's superadmin-configured fallback objective is used.
 
-Call responses include objective selection metadata: `objectiveHint`, `identifiedObjective`, `objectiveSelectionSource`, `objectiveIdentificationConfidence`, and `analysisStage`. Call detail analysis includes user-visible organization detections in `organizationDetectedTags` and `organizationDetectedParams`. Hidden global detections are never exposed by the API or SDK.
+Call responses include objective selection metadata: `objectiveHint`, `identifiedObjective`, `objectiveSelectionSource`, `objectiveIdentificationConfidence`, and `analysisStage`. `analysisStatus` is one of `pending`, `queued`, `processing`, `completed`, or `failed`. `queueStatus` is `queued`, `processing`, `completed`, `failed`, or `null` when analysis has not been queued. `analysisStage` is `audio_pass`, `objective_pass`, `publishing`, `completed`, or `null` when analysis has not been queued. Internal dead-letter and cancelled runs are exposed as `failed`. Call detail analysis includes user-visible organization detections in `organizationDetectedTags` and `organizationDetectedParams`. Hidden global detections are never exposed by the API or SDK.
 
 ## Pagination
 
