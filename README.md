@@ -127,6 +127,7 @@ $oriacall->webhooks->endpoints->paginate(['limit' => 50]);
 $response = $oriacall->calls->upload([
     'idempotencyKey' => 'crm-call-123',
     'externalId' => 'crm-call-123',
+    'recordedAt' => '2026-06-10T14:30:00Z',
     // Optional hint. Oriacall may override it during audio analysis.
     'objectiveId' => 'objective-id',
     'queueAnalysis' => true,
@@ -152,6 +153,7 @@ $response = $oriacall->calls->upload([
 ]);
 
 echo $response->data['data']['id'];
+echo $response->data['data']['recordedAt'];
 ```
 
 To upload in-memory audio, use `contents` instead of `path`:
