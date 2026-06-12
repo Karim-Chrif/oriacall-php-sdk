@@ -95,7 +95,7 @@ $oriacall->objectiveCustomFields->update('region', ['label' => 'Sales Region']);
 $oriacall->agents->list(['objectiveId' => 'objective-id']);
 $oriacall->agents->paginate(['limit' => 50]);
 
-$oriacall->calls->list(['limit' => 50]);
+$oriacall->calls->list(['limit' => 50, 'sortBy' => 'recordedAt']);
 $oriacall->calls->get('call-id');
 $oriacall->calls->upload([...]);
 $oriacall->calls->queueAnalysis('call-id');
@@ -203,6 +203,9 @@ $oriacall->objectives->list([
 ]);
 
 $oriacall->calls->list([
+    'recordedAfter' => '2026-01-01T00:00:00Z',
+    'recordedBefore' => '2026-02-01T00:00:00Z',
+    'sortBy' => 'recordedAt',
     'leadCustomFields' => [
         'crm_stage' => 'qualified',
     ],
@@ -214,6 +217,8 @@ $oriacall->leads->list([
     ],
 ]);
 ```
+
+For calls, `createdAfter` and `createdBefore` filter by Oriacall upload/record creation time. Use `recordedAfter`, `recordedBefore`, and `sortBy => recordedAt` for original call chronology. The recorded-time filters and sort fall back to `createdAt` when `recordedAt` is null.
 
 ## Errors
 
