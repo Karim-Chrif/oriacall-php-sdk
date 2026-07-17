@@ -24,6 +24,12 @@ class CallsResource
         return $this->client->get("/v1/calls/{$this->client->encodePath($callId)}");
     }
 
+    /** @param array{recordedAt: string} $input */
+    public function update(string $callId, array $input): ApiResponse
+    {
+        return $this->client->json('PATCH', "/v1/calls/{$this->client->encodePath($callId)}", $input);
+    }
+
     /**
      * @param  array<string, mixed>  $input  Accepts metadata fields plus `idempotencyKey` and `audio`.
      *                                       `audio` accepts `path`, or `contents`, with optional `filename` and `contentType`.

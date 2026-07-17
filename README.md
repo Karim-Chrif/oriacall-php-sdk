@@ -97,6 +97,7 @@ $oriacall->agents->paginate(['limit' => 50]);
 
 $oriacall->calls->list(['limit' => 50, 'sortBy' => 'recordedAt']);
 $oriacall->calls->get('call-id');
+$oriacall->calls->update('call-id', ['recordedAt' => '2026-06-10T14:30:00Z']);
 $oriacall->calls->upload([...]);
 $oriacall->calls->queueAnalysis('call-id');
 $oriacall->calls->waitForAnalysis('call-id', ['timeoutMs' => 120000]);
@@ -166,6 +167,18 @@ To upload in-memory audio, use `contents` instead of `path`:
     'filename' => 'call.mp3',
     'contentType' => 'audio/mpeg',
 ]
+```
+
+Required scope: `calls:write`.
+
+Update original source recording time for an existing call:
+
+```php
+$response = $oriacall->calls->update('call-id', [
+    'recordedAt' => '2026-06-10T14:30:00Z',
+]);
+
+echo $response->data['data']['recordedAt'];
 ```
 
 Required scope: `calls:write`.
