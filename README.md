@@ -95,7 +95,7 @@ $oriacall->objectiveCustomFields->update('region', ['label' => 'Sales Region']);
 $oriacall->agents->list(['objectiveId' => 'objective-id']);
 $oriacall->agents->paginate(['limit' => 50]);
 
-$oriacall->calls->list(['limit' => 50, 'sortBy' => 'recordedAt']);
+$oriacall->calls->list(['externalId' => 'crm-call-123']);
 $oriacall->calls->get('call-id');
 $oriacall->calls->update('call-id', ['recordedAt' => '2026-06-10T14:30:00Z']);
 $oriacall->calls->upload([...]);
@@ -123,6 +123,36 @@ $oriacall->webhooks->endpoints->paginate(['limit' => 50]);
 ```
 
 `$oriacall->calls->get('call-id')` includes transcript data when available. Transcript turn `speaker` values can be `agent`, `client`, or `system`. `system` represents telephony infrastructure such as voicemail greetings, carrier messages, transfer prompts, or tones; it is not a human participant.
+
+### Call List Options
+
+`$oriacall->calls->list()` and `$oriacall->calls->paginate()` accept these optional camelCase options:
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `limit` | `int` | Page size from 1 to 100. |
+| `cursor` | `string` | Opaque cursor from `pagination.nextCursor`. |
+| `objectiveId` | `string` | Filter by objective ID. |
+| `leadId` | `string` | Filter by lead ID. |
+| `agentId` | `string` | Filter by agent ID. |
+| `externalId` | `string` | Filter by an exact external ID match. |
+| `createdAfter` | `string` | Include calls created at or after this ISO 8601 timestamp. |
+| `createdBefore` | `string` | Include calls created at or before this ISO 8601 timestamp. |
+| `recordedAfter` | `string` | Include calls recorded at or after this ISO 8601 timestamp. |
+| `recordedBefore` | `string` | Include calls recorded at or before this ISO 8601 timestamp. |
+| `sortBy` | `createdAt\|recordedAt` | Select creation-time or recording-time order. |
+| `leadCustomFields` | `array<string, mixed>` | Filter by lead custom fields. |
+
+Find one call by its exact external ID:
+
+```php
+$response = $oriacall->calls->list([
+    'externalId' => 'crm-call-123',
+    'limit' => 1,
+]);
+
+$call = $response->data['data'][0] ?? null;
+```
 
 ## Upload A Call
 

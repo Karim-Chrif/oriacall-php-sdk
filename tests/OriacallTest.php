@@ -2,11 +2,50 @@
 
 namespace Oriacall\Tests;
 
+use Oriacall\ApiResponse;
+use Oriacall\Client;
+use Oriacall\ClientOptions;
 use Oriacall\Oriacall;
 use PHPUnit\Framework\TestCase;
+use ReflectionMethod;
 
 class OriacallTest extends TestCase
 {
+    public function test_calls_list_serializes_external_id_query_option(): void
+    {
+        $client = new class extends Client
+        {
+            public ?string $requestedUrl = null;
+
+            public function __construct()
+            {
+                parent::__construct(new ClientOptions(
+                    baseUrl: 'https://api.example.test',
+                    clientId: 'client-id',
+                    clientSecret: 'client-secret',
+                ));
+            }
+
+            public function get(string $path, array $query = []): ApiResponse
+            {
+                $buildUrl = new ReflectionMethod(Client::class, 'buildUrl');
+                $this->requestedUrl = $buildUrl->invoke($this, $path, $query);
+
+                return new ApiResponse(['data' => [], 'pagination' => ['nextCursor' => null]], 200);
+            }
+        };
+
+        $client->calls->list([
+            'externalId' => 'crm-call/123 + west',
+            'limit' => 25,
+        ]);
+
+        $this->assertSame(
+            'https://api.example.test/v1/calls?externalId=crm-call%2F123%20%2B%20west&limit=25',
+            $client->requestedUrl,
+        );
+    }
+
     public function test_verifies_webhook_signature(): void
     {
         $body = '{"event":"analysis.completed"}';
