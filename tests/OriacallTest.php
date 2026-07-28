@@ -46,6 +46,45 @@ class OriacallTest extends TestCase
         );
     }
 
+    public function test_calls_lookup_by_external_ids_posts_expected_path_and_json_body(): void
+    {
+        $client = new class extends Client
+        {
+            public ?string $requestedMethod = null;
+
+            public ?string $requestedPath = null;
+
+            /** @var array<string, mixed>|null */
+            public ?array $requestedBody = null;
+
+            public function __construct()
+            {
+                parent::__construct(new ClientOptions(
+                    baseUrl: 'https://api.example.test',
+                    clientId: 'client-id',
+                    clientSecret: 'client-secret',
+                ));
+            }
+
+            public function json(string $method, string $path, array $body): ApiResponse
+            {
+                $this->requestedMethod = $method;
+                $this->requestedPath = $path;
+                $this->requestedBody = $body;
+
+                return new ApiResponse(['data' => []], 200);
+            }
+        };
+
+        $client->calls->lookupByExternalIds(['crm-call-123', 'crm-call-456']);
+
+        $this->assertSame('POST', $client->requestedMethod);
+        $this->assertSame('/v1/calls/lookup', $client->requestedPath);
+        $this->assertSame([
+            'externalIds' => ['crm-call-123', 'crm-call-456'],
+        ], $client->requestedBody);
+    }
+
     public function test_verifies_webhook_signature(): void
     {
         $body = '{"event":"analysis.completed"}';

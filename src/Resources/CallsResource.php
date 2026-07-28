@@ -39,6 +39,18 @@ class CallsResource
         return $this->client->get("/v1/calls/{$this->client->encodePath($callId)}");
     }
 
+    /**
+     * Look up calls by exact, case-sensitive external IDs.
+     *
+     * @param  list<string>  $externalIds  One to 100 distinct external call IDs.
+     */
+    public function lookupByExternalIds(array $externalIds): ApiResponse
+    {
+        return $this->client->json('POST', '/v1/calls/lookup', [
+            'externalIds' => $externalIds,
+        ]);
+    }
+
     /** @param array{recordedAt: string} $input */
     public function update(string $callId, array $input): ApiResponse
     {

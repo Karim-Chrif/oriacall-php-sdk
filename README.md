@@ -97,6 +97,7 @@ $oriacall->agents->paginate(['limit' => 50]);
 
 $oriacall->calls->list(['externalId' => 'crm-call-123']);
 $oriacall->calls->get('call-id');
+$oriacall->calls->lookupByExternalIds(['crm-call-123', 'crm-call-456']);
 $oriacall->calls->update('call-id', ['recordedAt' => '2026-06-10T14:30:00Z']);
 $oriacall->calls->upload([...]);
 $oriacall->calls->queueAnalysis('call-id');
@@ -153,6 +154,25 @@ $response = $oriacall->calls->list([
 
 $call = $response->data['data'][0] ?? null;
 ```
+
+### Look Up Calls By External IDs
+
+Use `$oriacall->calls->lookupByExternalIds()` to resolve multiple external call IDs in one request:
+
+```php
+$response = $oriacall->calls->lookupByExternalIds([
+    'crm-call-123',
+    'crm-call-456',
+]);
+
+foreach ($response->data['data'] as $call) {
+    echo $call['externalId'].' => '.$call['id'].PHP_EOL;
+}
+```
+
+Required scope: `calls:read`.
+
+The `$externalIds` parameter must be a list of 1 to 100 distinct, non-empty strings, each at most 255 characters. Matching is exact and case-sensitive. The response contains every matching call summary without pagination; missing IDs do not produce placeholders, and duplicate external IDs assigned to multiple calls return every match.
 
 ## Upload A Call
 
